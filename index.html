@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>撿金塊遊戲</title>
+    <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.8/dist/aframe-orbit-controls-component.min.js"></script>
+</head>
+<body>
+    <a-scene>
+        <a-sky color="white"></a-sky>
+        <a-assets>
+            <a-asset-item id="Gold-obj" src="obj/Gold/Gold.obj"></a-asset-item>
+            <a-asset-item id="Gold-mtl" src="obj/Gold/Gold.mtl"></a-asset-item>
+            <a-asset-item id="gear-obj" src="obj/gear/gear.obj"></a-asset-item>
+            <a-asset-item id="gear-mtl" src="obj/gear/gear.mtl"></a-asset-item>
+            <img id="rock" src="textures/wall.jpg">
+        </a-assets>
+        <a-entity id="golds"></a-entity>
+        <a-entity id="score" text="value: HELLO;color:black" scale="100 100 100" position="45 12 0"></a-entity>
+        <a-plane  position="0 0 0" rotation="-90 0 0" width="4" height="4" scale="20 20 20" src="#rock" repeat="30 30" color="gray" position="0 0 0 " rotation="270 0 0 " geometry=""></a-plane>
+        <a-entity line="color: red; opacity: 0.75" gearvr-controls="hand: right" laser-controls="hand: right" obj-model="obj: #gear-obj; mtl: #gear-mtl" scale="5 5 5"></a-entity>
+        <a-camera position="27 2 28" rotation="0 10 0" look-controls>
+            <a-cursor fuse="true" color="yellow" scale="2 2 2"></a-cursor>
+        </a-camera>
+    </a-scene>
+    <!-- obj source -->
+    <!-- https://poly.google.com/view/9OxYswPb4nU -->
+    <!-- https://poly.google.com/view/0w-WpQf7O9J -->
+    <script>
+        var golds = document.getElementById('golds');
+        var goldLength = 10,str = '',score = 0
+        document.getElementById('score').setAttribute('text', "value: 0;color:black")
+        for (var i = 0; goldLength > i; i++) {
+            var maxXNum = 20;
+            var minXNum = -20;
+            var X = Math.floor(Math.random() * (maxXNum - minXNum + 1)) + minXNum;
+            var maxYNum = 2;
+            var minYNum = 15;
+            var Y = Math.floor(Math.random() * (maxYNum - minYNum + 1)) + minYNum;
+            var maxZNum = 20;
+            var minZNum = -20;
+            var Z = Math.floor(Math.random() * (maxZNum - minZNum + 1)) + minZNum;
+            var position = X + ' ' + Y + ' ' + Z;
+            str += '<a-entity handle-events rotation="0 0 0" obj-model="obj: #Gold-obj; mtl: #Gold-mtl" scale="5 5 5" position="' + position + '"><a-animation attribute="rotation" fill="forwards" repeat="indefinite" easing="linear" to="0 360 0"></a-animation></a-entity>'
+        }
+        golds.innerHTML = str
+        AFRAME.registerComponent('handle-events', {
+            init: function () {
+                var entity = this.el;
+                entity.addEventListener('mouseenter', function () {
+                    score += 1;
+                    document.getElementById('score').setAttribute('text', "value: " + score + ";color:black")
+                    entity.parentNode.removeChild(entity);
+                    if (score == 10) {
+                        document.getElementById('score').setAttribute('text', "value: " + "cool!" + ";color:black")
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
